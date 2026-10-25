@@ -1,0 +1,1132 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NEXUS // Extreme Performance USB Storage Solutions</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        cyber: {
+                            black: '#050508',
+                            dark: '#0a0a12',
+                            card: 'rgba(15, 15, 30, 0.75)',
+                            cyan: '#00f3ff',
+                            magenta: '#ff0055',
+                            purple: '#8a2be2',
+                            glow: '#00f3ff22'
+                        }
+                    },
+                    animation: {
+                        'pulse-glow': 'pulseGlow 2s infinite alternate',
+                        'float': 'float 4s ease-in-out infinite',
+                        'shimmer': 'shimmer 2.5s infinite linear',
+                        'spin-slow': 'spin 12s linear infinite',
+                    },
+                    keyframes: {
+                        pulseGlow: {
+                            '0%': { boxShadow: '0 0 15px rgba(0,243,255,0.4), inset 0 0 15px rgba(0,243,255,0.2)' },
+                            '100%': { boxShadow: '0 0 35px rgba(255,0,85,0.7), inset 0 0 20px rgba(255,0,85,0.4)' }
+                        },
+                        float: {
+                            '0%, 100%': { transform: 'translateY(0px) rotate(0deg)' },
+                            '50%': { transform: 'translateY(-12px) rotate(1deg)' }
+                        },
+                        shimmer: {
+                            '0%': { backgroundPosition: '-200% 0' },
+                            '100%': { backgroundPosition: '200% 0' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- Canvas Confetti Library -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;600;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: #050508;
+            color: #e2e8f0;
+            overflow-x: hidden;
+        }
+        h1, h2, h3, h4, .font-orbitron {
+            font-family: 'Orbitron', sans-serif;
+        }
+
+        /* Custom Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #050508;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #1e1e38;
+            border-radius: 4px;
+            border: 1px solid #00f3ff;
+        }
+
+        .neon-border-cyan {
+            border: 1px solid #00f3ff;
+            box-shadow: 0 0 15px rgba(0, 243, 255, 0.3);
+        }
+        .neon-text-cyan {
+            text-shadow: 0 0 10px rgba(0, 243, 255, 0.8), 0 0 20px rgba(0, 243, 255, 0.4);
+        }
+        
+        /* Shimmering Gradient Button */
+        .btn-quantum {
+            background: linear-gradient(90deg, #00f3ff, #8a2be2, #ff0055, #00f3ff);
+            background-size: 300% 100%;
+            animation: shimmer 4s infinite linear;
+            transition: all 0.3s ease;
+        }
+        .btn-quantum:hover {
+            box-shadow: 0 0 25px rgba(0, 243, 255, 0.8), 0 0 40px rgba(255, 0, 85, 0.5);
+            transform: scale(1.03);
+        }
+
+        /* Screen Shake Animation for Hold Button */
+        @keyframes rumble {
+            0% { transform: translate(0, 0) rotate(0deg); }
+            25% { transform: translate(-3px, 3px) rotate(-1deg); }
+            50% { transform: translate(3px, -2px) rotate(1deg); }
+            75% { transform: translate(-2px, -3px) rotate(0.5deg); }
+            100% { transform: translate(2px, 2px) rotate(-0.5deg); }
+        }
+        .rumble-active {
+            animation: rumble 0.08s infinite ease-in-out;
+        }
+
+        /* Canvas background overlay */
+        #particleCanvas {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        /* Floating dopamine indicator */
+        .float-plus-one {
+            position: fixed;
+            pointer-events: none;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 900;
+            color: #00f3ff;
+            text-shadow: 0 0 10px #00f3ff, 0 0 20px #ff0055;
+            font-size: 1.5rem;
+            animation: floatUpAndFade 1.2s forwards cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            z-index: 9999;
+        }
+
+        @keyframes floatUpAndFade {
+            0% { opacity: 1; transform: translateY(0) scale(0.8); }
+            50% { opacity: 1; transform: translateY(-40px) scale(1.3); }
+            100% { opacity: 0; transform: translateY(-80px) scale(1); }
+        }
+    </style>
+</head>
+<body class="relative min-h-screen bg-cyber-black text-slate-100 flex flex-col justify-between selection:bg-cyber-magenta selection:text-white">
+
+    <!-- Floating Canvas for Background Particles -->
+    <canvas id="particleCanvas"></canvas>
+
+    <!-- Header Navigation -->
+    <header class="sticky top-0 z-40 backdrop-blur-md bg-cyber-dark/80 border-b border-cyan-500/20">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between">
+            <!-- Logo -->
+            <div class="flex items-center space-x-3 cursor-pointer" onclick="navigateTo('home')">
+                <div class="relative w-12 h-12 flex items-center justify-center bg-gradient-to-tr from-cyan-500 via-purple-600 to-pink-500 rounded-full p-[2px] animate-pulse-glow">
+                    <div class="w-full h-full bg-cyber-black rounded-full flex items-center justify-center">
+                        <i class="fa-solid fa-hard-drive text-cyan-400 text-xl"></i>
+                    </div>
+                </div>
+                <div>
+                    <span class="font-orbitron font-black text-2xl tracking-widest text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-400 to-pink-500">NEXUS</span>
+                    <span class="block text-[10px] tracking-widest text-cyan-400 uppercase font-bold -mt-1">USB 3.2 GEN 2x2 HARDWARE</span>
+                </div>
+            </div>
+
+            <!-- Nav Links -->
+            <nav class="hidden md:flex items-center space-x-8 font-semibold text-sm tracking-wider uppercase">
+                <button onclick="navigateTo('home')" class="hover:text-cyan-400 transition-colors flex items-center space-x-1">
+                    <i class="fa-solid fa-house text-xs text-cyan-400"></i><span>Store Front</span>
+                </button>
+                <button onclick="navigateTo('products')" class="hover:text-cyan-400 transition-colors flex items-center space-x-1">
+                    <i class="fa-solid fa-usb text-xs text-pink-500"></i><span>Flash Drives</span>
+                </button>
+                <button onclick="navigateTo('specs')" class="hover:text-cyan-400 transition-colors flex items-center space-x-1">
+                    <i class="fa-solid fa-microchip text-xs text-yellow-400"></i><span>Tech Specs</span>
+                </button>
+                <!-- Terminal Trigger Button in Nav -->
+                <button onclick="toggleTerminal()" class="hover:text-emerald-400 transition-colors flex items-center space-x-1 font-mono text-xs border border-emerald-500/40 px-3 py-1 rounded-full bg-emerald-950/30 text-emerald-400">
+                    <i class="fa-solid fa-terminal text-xs"></i><span>CLI TERMINAL</span>
+                </button>
+            </nav>
+
+            <!-- Cart Trigger Button -->
+            <div class="flex items-center space-x-4">
+                <button onclick="toggleCart()" class="relative group px-6 py-2.5 rounded-full btn-quantum text-cyber-black font-orbitron font-extrabold text-sm flex items-center space-x-2">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    <span>STORE CART</span>
+                    <span id="cart-badge" class="bg-cyber-black text-cyan-400 px-2.5 py-0.5 rounded-full text-xs font-black border border-cyan-400/50">0</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dynamic Content Container -->
+    <main class="relative z-10 flex-grow">
+
+        <!-- ================= HOME SECTION ================= -->
+        <section id="sec-home" class="space-y-24 py-8">
+            <!-- Hero Section -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center pt-12 pb-8 relative">
+                <!-- High Tech Badge -->
+                <div class="inline-flex items-center space-x-2 px-4 py-1.5 rounded-full border border-cyan-500/40 bg-cyan-950/30 text-cyan-300 text-xs font-semibold uppercase tracking-widest mb-6 animate-bounce">
+                    <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+                    <span>NVMe-Over-USB Architecture • Up to 2000 MB/s Sequential Read</span>
+                </div>
+
+                <h1 class="font-orbitron text-4xl sm:text-6xl lg:text-7xl font-black tracking-tight text-white leading-none mb-6">
+                    EXTREME SPEED USB <br>
+                    <span class="text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-purple-500 to-pink-500 neon-text-cyan">
+                        FLASH STORAGE DRIVES
+                    </span>
+                </h1>
+
+                <p class="max-w-3xl mx-auto text-slate-300 text-lg sm:text-xl font-medium leading-relaxed mb-10">
+                    Engineered with 3D TLC NAND Flash memory, custom thermal throttling protection, and ultra-durable anodized aluminum enclosures. Seamlessly transfer 4K video, RAW imagery, and massive game libraries in seconds.
+                </p>
+
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+                    <button onclick="navigateTo('products')" class="w-full sm:w-auto px-8 py-4 rounded-full btn-quantum text-cyber-black font-orbitron font-black text-base uppercase tracking-wider flex items-center justify-center space-x-3">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span>Shop Flash Drives</span>
+                    </button>
+                    <button onclick="showQuickDemoToast()" class="w-full sm:w-auto px-8 py-4 rounded-full bg-cyber-dark border border-cyan-500/50 hover:border-pink-500 text-cyan-300 font-orbitron font-bold text-base uppercase tracking-wider hover:bg-cyan-950/30 transition-all flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-bolt"></i>
+                        <span>Test Transfer Speed</span>
+                    </button>
+                </div>
+
+                <!-- Live Performance Stats Banner -->
+                <div class="mt-16 pt-8 border-t border-slate-800/80 grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+                    <div>
+                        <div class="font-orbitron text-2xl font-bold text-cyan-400">2000 MB/s</div>
+                        <div class="text-xs text-slate-400 uppercase tracking-widest mt-1">Read / Write Speed</div>
+                    </div>
+                    <div>
+                        <div class="font-orbitron text-2xl font-bold text-pink-500">USB 3.2 Gen 2x2</div>
+                        <div class="text-xs text-slate-400 uppercase tracking-widest mt-1">Type-C Interface</div>
+                    </div>
+                    <div>
+                        <div class="font-orbitron text-2xl font-bold text-purple-400">AES 256-BIT</div>
+                        <div class="text-xs text-slate-400 uppercase tracking-widest mt-1">Hardware Encryption</div>
+                    </div>
+                    <div>
+                        <div class="font-orbitron text-2xl font-bold text-yellow-400">5-YEAR WARRANTY</div>
+                        <div class="text-xs text-slate-400 uppercase tracking-widest mt-1">Factory Guarantee</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Partner & Standard Badges -->
+            <div class="bg-cyber-dark/60 py-6 border-y border-cyan-500/10">
+                <div class="max-w-7xl mx-auto px-4 text-center">
+                    <p class="text-xs font-orbitron uppercase tracking-widest text-slate-500 mb-4">UNIVERSAL COMPATIBILITY PROTOCOLS</p>
+                    <div class="flex flex-wrap justify-center items-center gap-8 md:gap-16 opacity-70 font-orbitron font-bold text-slate-400 text-sm">
+                        <span class="flex items-center space-x-2 hover:text-cyan-400"><i class="fa-brands fa-windows"></i><span>WINDOWS 11 READY</span></span>
+                        <span class="flex items-center space-x-2 hover:text-pink-400"><i class="fa-brands fa-apple"></i><span>MACOS / THUNDERBOLT</span></span>
+                        <span class="flex items-center space-x-2 hover:text-purple-400"><i class="fa-brands fa-linux"></i><span>LINUX KERNEL SUPPORT</span></span>
+                        <span class="flex items-center space-x-2 hover:text-yellow-400"><i class="fa-solid fa-gamepad"></i><span>CONSOLE STORAGE COMPATIBLE</span></span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Featured Products -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-12">
+                    <h2 class="font-orbitron text-3xl font-bold text-white tracking-wide uppercase">
+                        Select Storage <span class="text-cyan-400">Capacity</span>
+                    </h2>
+                    <p class="text-slate-400 text-sm mt-2">All drives feature anodized heat-dissipating shells and active RGB activity status indicators.</p>
+                </div>
+
+                <!-- Products Grid -->
+                <div id="product-grid" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Populated dynamically -->
+                </div>
+            </div>
+
+            <!-- Customer Reviews -->
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center mb-10">
+                    <h2 class="font-orbitron text-2xl font-bold text-pink-500 tracking-wider uppercase">VERIFIED PURCHASER REVIEWS</h2>
+                    <p class="text-slate-400 text-xs">Real performance feedback from creative professionals and IT specialists.</p>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="p-6 rounded-2xl bg-cyber-dark border border-cyan-500/20 backdrop-blur-md">
+                        <div class="flex items-center space-x-1 text-yellow-400 text-xs mb-3">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-sm italic text-slate-300 mb-4">"Transferred 150GB of 8K video footage in under two minutes! The USB 3.2 Gen 2x2 speeds are insane and the anodized body keeps it completely cool."</p>
+                        <div class="font-orbitron text-xs font-bold text-cyan-400">- Marcus Vance, Video Producer</div>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-cyber-dark border border-pink-500/20 backdrop-blur-md">
+                        <div class="flex items-center space-x-1 text-yellow-400 text-xs mb-3">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-sm italic text-slate-300 mb-4">"The 2TB drive replaced my bulky external SSD setup. Fits right on my keychain with native hardware encryption."</p>
+                        <div class="font-orbitron text-xs font-bold text-pink-400">- Sarah Chen, Systems Administrator</div>
+                    </div>
+                    <div class="p-6 rounded-2xl bg-cyber-dark border border-purple-500/20 backdrop-blur-md">
+                        <div class="flex items-center space-x-1 text-yellow-400 text-xs mb-3">
+                            <i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i>
+                        </div>
+                        <p class="text-sm italic text-slate-300 mb-4">"The hold-to-confirm checkout on this site was super satisfying. Product arrived mentally in zero seconds flat!"</p>
+                        <div class="font-orbitron text-xs font-bold text-purple-400">- David K., Tech Enthusiast</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- ================= PRODUCTS SECTION ================= -->
+        <section id="sec-products" class="hidden max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="text-center mb-12">
+                <h1 class="font-orbitron text-4xl font-extrabold text-white mb-3">HARDWARE CATALOG</h1>
+                <p class="text-cyan-400 font-semibold text-sm uppercase tracking-widest">Select your desired storage volume and specs</p>
+            </div>
+            <div id="product-page-grid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                <!-- Dynamically populated -->
+            </div>
+        </section>
+
+        <!-- ================= SPECS SECTION ================= -->
+        <section id="sec-specs" class="hidden max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+            <div class="bg-cyber-dark border border-cyan-500/30 rounded-3xl p-8 backdrop-blur-md relative overflow-hidden">
+                <div class="absolute -top-24 -right-24 w-60 h-60 bg-cyan-500/10 rounded-full blur-3xl pointer-events-none"></div>
+                
+                <h1 class="font-orbitron text-3xl font-black text-cyan-400 mb-6 flex items-center space-x-3">
+                    <i class="fa-solid fa-microchip"></i>
+                    <span>NEXUS HARDWARE SPECIFICATIONS</span>
+                </h1>
+
+                <div class="space-y-6 text-slate-300 text-sm">
+                    <p class="leading-relaxed">
+                        Every NEXUS USB Flash Drive is built using premium 3D TLC NAND Flash memory and high-end controller chips for sustained read and write operations.
+                    </p>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4">
+                        <div class="p-4 rounded-xl bg-cyber-black/60 border border-slate-800">
+                            <h3 class="font-orbitron text-pink-400 font-bold mb-1">DATA TRANSFER SPEED</h3>
+                            <p class="text-xs text-slate-400">Up to 2000 MB/s Sequential Read & 1800 MB/s Sequential Write speeds over USB 3.2 Gen 2x2.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-cyber-black/60 border border-slate-800">
+                            <h3 class="font-orbitron text-cyan-400 font-bold mb-1">HARDWARE ENCRYPTION</h3>
+                            <p class="text-xs text-slate-400">AES 256-bit hardware encryption engine for enterprise security compliance.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-cyber-black/60 border border-slate-800">
+                            <h3 class="font-orbitron text-purple-400 font-bold mb-1">THERMAL MANAGEMENT</h3>
+                            <p class="text-xs text-slate-400">Integrated thermal throttling guard with aircraft-grade aluminum casing.</p>
+                        </div>
+                        <div class="p-4 rounded-xl bg-cyber-black/60 border border-slate-800">
+                            <h3 class="font-orbitron text-yellow-400 font-bold mb-1">STATUS RGB LIGHTING</h3>
+                            <p class="text-xs text-slate-400">Multi-color LED activity indicator for active data transfer visibility.</p>
+                        </div>
+                    </div>
+
+                    <div class="pt-6 border-t border-slate-800 text-center">
+                        <button onclick="navigateTo('products')" class="px-8 py-3 rounded-full btn-quantum text-cyber-black font-orbitron font-bold">
+                            VIEW PRODUCT CATALOG
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="relative z-10 border-t border-slate-800/80 bg-cyber-dark/90 py-8 mt-16 text-center text-xs text-slate-500">
+        <div class="max-w-7xl mx-auto px-4 space-y-3">
+            <div class="flex justify-center space-x-6 font-orbitron text-cyan-400">
+                <span>NEXUS HARDWARE SYSTEMS © 2026</span>
+                <span>•</span>
+                <span>ALL RIGHTS RESERVED</span>
+            </div>
+            <p>Disclaimers: Interactive dopamine checkout simulation. No real money will be charged.</p>
+        </div>
+    </footer>
+
+    <!-- Floating Terminal Launcher Trigger Button (Bottom-Right) -->
+    <button onclick="toggleTerminal()" class="fixed bottom-6 right-6 z-40 bg-cyber-dark border border-emerald-500/50 hover:border-emerald-400 text-emerald-400 p-3.5 rounded-full shadow-lg shadow-emerald-500/20 backdrop-blur-md transition-all duration-300 hover:scale-110 flex items-center justify-center space-x-2 font-mono text-xs">
+        <i class="fa-solid fa-terminal text-base"></i>
+        <span class="hidden sm:inline font-bold">SYS_CLI</span>
+    </button>
+
+    <!-- ================= FAKE TERMINAL / COMMAND LINE MODAL ================= -->
+    <div id="terminal-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+        <div class="bg-black/95 border border-emerald-500/60 rounded-2xl w-full max-w-2xl h-[480px] flex flex-col shadow-[0_0_30px_rgba(16,185,129,0.2)] font-mono text-xs overflow-hidden">
+            <!-- Terminal Header Bar -->
+            <div class="bg-slate-900 border-b border-emerald-500/30 px-4 py-2.5 flex items-center justify-between select-none">
+                <div class="flex items-center space-x-2">
+                    <span class="w-3 h-3 rounded-full bg-red-500 inline-block cursor-pointer" onclick="toggleTerminal()"></span>
+                    <span class="w-3 h-3 rounded-full bg-yellow-500 inline-block"></span>
+                    <span class="w-3 h-3 rounded-full bg-emerald-500 inline-block"></span>
+                    <span class="ml-2 text-slate-400 font-bold text-[11px]">nexus-os@hardware-shell:~</span>
+                </div>
+                <div class="text-emerald-400/70 text-[10px]">BASH v5.2.15-RELEASE</div>
+            </div>
+
+            <!-- Terminal Output Window -->
+            <div id="terminal-output" class="flex-grow p-4 overflow-y-auto space-y-2 text-emerald-400 scrollbar-thin scrollbar-thumb-emerald-800">
+                <div class="text-slate-500">NEXUS CLI Terminal Interface v4.09</div>
+                <div class="text-slate-500">Type <span class="text-yellow-400 font-bold">'help'</span> to view available system commands or run custom scripts.</div>
+                <div class="text-pink-400 font-bold">[!] Easter Egg Hint: Try installing 'opsec' using Linux package manager tools.</div>
+                <div class="border-b border-emerald-950 pb-2"></div>
+            </div>
+
+            <!-- Terminal Input Line -->
+            <form onsubmit="handleTerminalSubmit(event)" class="bg-slate-950 px-4 py-3 border-t border-emerald-900/40 flex items-center space-x-2">
+                <span class="text-pink-500 font-bold">root@nexus-shell:~#</span>
+                <input id="terminal-input" type="text" autocomplete="off" spellcheck="false" class="flex-grow bg-transparent text-emerald-300 focus:outline-none font-mono text-xs placeholder-emerald-800" placeholder="Type a command...">
+            </form>
+        </div>
+    </div>
+
+    <!-- ================= SLIDE-OUT CART MODAL ================= -->
+    <div id="cart-drawer" class="fixed inset-0 z-50 pointer-events-none transition-opacity duration-300 opacity-0">
+        <!-- Backdrop -->
+        <div id="cart-backdrop" onclick="toggleCart()" class="absolute inset-0 bg-black/70 backdrop-blur-sm"></div>
+
+        <!-- Drawer Panel -->
+        <div id="cart-panel" class="absolute top-0 right-0 h-full w-full max-w-md bg-cyber-dark border-l border-cyan-500/30 p-6 shadow-2xl transform translate-x-full transition-transform duration-300 ease-in-out flex flex-col justify-between overflow-y-auto pointer-events-auto">
+            <div>
+                <div class="flex items-center justify-between pb-6 border-b border-slate-800">
+                    <div class="flex items-center space-x-2 font-orbitron text-lg font-bold text-cyan-400">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span>YOUR HARDWARE CART</span>
+                    </div>
+                    <button onclick="toggleCart()" class="text-slate-400 hover:text-white text-xl">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Cart Items List -->
+                <div id="cart-items-container" class="py-6 space-y-4">
+                    <!-- Dynamic cart content -->
+                </div>
+            </div>
+
+            <!-- Cart Summary & Checkout Trigger -->
+            <div class="pt-6 border-t border-slate-800 space-y-4">
+                <div class="flex justify-between items-center text-sm">
+                    <span class="text-slate-400">Subtotal:</span>
+                    <span id="cart-subtotal" class="font-orbitron font-bold text-cyan-400 text-lg">$0.00</span>
+                </div>
+                <div class="flex justify-between items-center text-xs text-slate-500">
+                    <span>Express Shipping:</span>
+                    <span class="text-emerald-400 font-bold">FREE (INSTANT)</span>
+                </div>
+                <button onclick="openCheckoutModal()" id="btn-proceed-checkout" class="w-full py-4 rounded-full btn-quantum text-cyber-black font-orbitron font-black text-sm uppercase tracking-wider flex items-center justify-center space-x-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                    <span>Proceed to Express Checkout</span>
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= CHECKOUT MODAL (HOLD TO BUY) ================= -->
+    <div id="checkout-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md hidden">
+        <div id="checkout-box" class="bg-cyber-dark border-2 border-cyan-500 rounded-3xl w-full max-w-lg p-6 sm:p-8 shadow-2xl relative overflow-hidden text-center">
+            
+            <button onclick="closeCheckoutModal()" class="absolute top-4 right-4 text-slate-400 hover:text-white text-xl">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+
+            <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-cyan-950 border border-cyan-400/50 text-cyan-400 text-2xl mb-4">
+                <i class="fa-solid fa-shield-halved"></i>
+            </div>
+
+            <h2 class="font-orbitron text-2xl font-black text-white mb-2">SECURE HARDWARE CHECKOUT</h2>
+            <p class="text-slate-400 text-xs mb-6">Hold down the button below for 3 seconds to complete payment authorization.</p>
+
+            <!-- Total display -->
+            <div class="bg-cyber-black/70 p-4 rounded-2xl border border-slate-800 mb-6">
+                <span class="text-xs text-slate-500 uppercase tracking-wider block">Total Amount</span>
+                <span id="checkout-total-price" class="font-orbitron text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500">$0.00</span>
+            </div>
+
+            <!-- HOLD TO BUY BUTTON AREA -->
+            <div class="relative mb-4">
+                <button id="hold-buy-btn" class="w-full py-5 rounded-full bg-gradient-to-r from-cyan-500 via-purple-600 to-pink-500 text-white font-orbitron font-black text-base uppercase tracking-widest relative overflow-hidden shadow-lg select-none cursor-pointer border border-cyan-300/50">
+                    <!-- Progress fill animation overlay -->
+                    <div id="hold-progress-bar" class="absolute top-0 left-0 bottom-0 bg-pink-500/80 w-0 transition-all duration-75"></div>
+                    
+                    <span id="hold-btn-text" class="relative z-10 flex items-center justify-center space-x-2">
+                        <i class="fa-solid fa-fingerprint text-xl"></i>
+                        <span>HOLD TO CONFIRM PURCHASE</span>
+                    </span>
+                </button>
+            </div>
+
+            <div class="text-[11px] text-slate-500 font-mono">
+                <i class="fa-solid fa-lock text-cyan-400 mr-1"></i> AES 256-Bit Encrypted Payment Gateway
+            </div>
+        </div>
+    </div>
+
+    <!-- ================= SUCCESS / VICTORY OVERLAY ================= -->
+    <div id="success-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/90 backdrop-blur-lg hidden">
+        <div class="bg-cyber-dark border-2 border-pink-500 rounded-3xl w-full max-w-md p-8 text-center shadow-2xl relative">
+            <div class="w-20 h-20 bg-gradient-to-tr from-pink-500 to-yellow-400 rounded-full flex items-center justify-center mx-auto mb-6 shadow-lg shadow-pink-500/50 text-white text-3xl">
+                <i class="fa-solid fa-circle-check"></i>
+            </div>
+            
+            <h1 class="font-orbitron text-3xl font-black text-white mb-2">ORDER CONFIRMED!</h1>
+            <p class="text-pink-400 font-bold text-sm tracking-widest uppercase mb-4">Dopamine Reward Unlocked</p>
+            <p class="text-slate-300 text-xs mb-6">Your NEXUS USB Flash Drives have been successfully purchased!</p>
+
+            <div class="bg-cyber-black p-4 rounded-xl border border-pink-500/30 text-left space-y-2 mb-6 font-mono text-xs">
+                <div class="flex justify-between"><span class="text-slate-500">ORDER NUMBER:</span><span class="text-cyan-400">#NEXUS-88392-X</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">PAYMENT STATUS:</span><span class="text-emerald-400">PAID (CONFIRMED)</span></div>
+                <div class="flex justify-between"><span class="text-slate-500">EST. DELIVERY:</span><span class="text-yellow-400">INSTANT SIMULATION</span></div>
+            </div>
+
+            <!-- Reset and Redirect Back to Home Button -->
+            <button onclick="finishCheckoutAndRedirect()" class="w-full py-4 rounded-full btn-quantum text-cyber-black font-orbitron font-black text-sm uppercase tracking-wider flex items-center justify-center space-x-2">
+                <i class="fa-solid fa-house"></i>
+                <span>BACK TO STORE HOME</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- LIVE FAKE BUYER POPUP -->
+    <div id="live-buyer-popup" class="fixed bottom-6 left-6 z-30 bg-cyber-dark/90 border border-cyan-500/40 p-4 rounded-2xl shadow-xl backdrop-blur-md flex items-center space-x-3 transition-all duration-500 transform translate-y-32 opacity-0 max-w-xs">
+        <div class="w-10 h-10 rounded-full bg-gradient-to-tr from-cyan-400 to-pink-500 flex items-center justify-center text-cyber-black font-bold text-xs font-orbitron">
+            <i class="fa-solid fa-bag-shopping"></i>
+        </div>
+        <div>
+            <div id="buyer-name" class="font-orbitron text-xs font-bold text-white">Alex from Tokyo</div>
+            <div id="buyer-action" class="text-[11px] text-cyan-300">Just purchased NEXUS 4TB!</div>
+            <div class="text-[9px] text-slate-500 mt-0.5">2 seconds ago • Verified Purchase</div>
+        </div>
+    </div>
+
+    <!-- AUDIO SYNTHESIZER (WEB AUDIO API) -->
+    <script>
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+
+        function playSound(type) {
+            if (audioCtx.state === 'suspended') {
+                audioCtx.resume();
+            }
+
+            const osc = audioCtx.createOscillator();
+            const gain = audioCtx.createGain();
+            osc.connect(gain);
+            gain.connect(audioCtx.destination);
+
+            const now = audioCtx.currentTime;
+
+            if (type === 'add') {
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(600, now);
+                osc.frequency.exponentialRampToValueAtTime(1200, now + 0.15);
+                gain.gain.setValueAtTime(0.2, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.15);
+                osc.start(now);
+                osc.stop(now + 0.15);
+            } else if (type === 'hold') {
+                osc.type = 'sawtooth';
+                osc.frequency.setValueAtTime(150, now);
+                osc.frequency.linearRampToValueAtTime(450, now + 0.1);
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.01, now + 0.1);
+                osc.start(now);
+                osc.stop(now + 0.1);
+            } else if (type === 'victory') {
+                const notes = [523.25, 659.25, 783.99, 1046.50];
+                notes.forEach((freq, index) => {
+                    const noteOsc = audioCtx.createOscillator();
+                    const noteGain = audioCtx.createGain();
+                    noteOsc.connect(noteGain);
+                    noteGain.connect(audioCtx.destination);
+
+                    noteOsc.type = 'triangle';
+                    noteOsc.frequency.setValueAtTime(freq, now + index * 0.08);
+                    noteGain.gain.setValueAtTime(0.3, now + index * 0.08);
+                    noteGain.gain.exponentialRampToValueAtTime(0.001, now + index * 0.08 + 0.3);
+
+                    noteOsc.start(now + index * 0.08);
+                    noteOsc.stop(now + index * 0.08 + 0.3);
+                });
+            } else if (type === 'terminal_beep') {
+                osc.type = 'square';
+                osc.frequency.setValueAtTime(880, now);
+                gain.gain.setValueAtTime(0.05, now);
+                gain.gain.exponentialRampToValueAtTime(0.001, now + 0.05);
+                osc.start(now);
+                osc.stop(now + 0.05);
+            }
+        }
+    </script>
+
+    <!-- DATA & LOGIC SCRIPT -->
+    <script>
+        // Product Catalog Data with realistic specs & pricing
+        const PRODUCTS = [
+            {
+                id: 'nexus-256',
+                name: 'NEXUS Pro 256GB',
+                capacity: '256GB',
+                price: 19.99,
+                color: 'from-cyan-500 to-blue-600',
+                glow: 'border-cyan-500',
+                badge: 'STANDARD EDITION',
+                speed: '1000 MB/s Read',
+                desc: 'Anodized aluminum body with USB 3.2 Gen 2 interface and blue LED activity indicator.'
+            },
+            {
+                id: 'nexus-1tb',
+                name: 'NEXUS Pro 1TB',
+                capacity: '1TB',
+                price: 49.99,
+                color: 'from-purple-500 to-pink-500',
+                glow: 'border-purple-500',
+                badge: 'BESTSELLER',
+                speed: '1800 MB/s Read',
+                desc: 'High-density 3D TLC NAND Flash memory with built-in thermal throttling guard.'
+            },
+            {
+                id: 'nexus-2tb',
+                name: 'NEXUS Extreme 2TB',
+                capacity: '2TB',
+                price: 89.99,
+                color: 'from-pink-500 to-rose-600',
+                glow: 'border-pink-500',
+                badge: 'CREATOR EDITION',
+                speed: '2000 MB/s Read',
+                desc: 'Dual-channel NVMe controller wrapped in heat-dissipating alloy casing with RGB accent ring.'
+            },
+            {
+                id: 'nexus-4tb',
+                name: 'NEXUS Ultima 4TB',
+                capacity: '4TB',
+                price: 149.99,
+                color: 'from-yellow-400 via-pink-500 to-purple-600',
+                glow: 'border-yellow-400',
+                badge: 'FLAGSHIP STORAGE',
+                speed: '2000 MB/s Read/Write',
+                desc: 'Maximum capacity flash storage node with hardware AES 256-bit encryption and dynamic RGB lighting.'
+            }
+        ];
+
+        // State Management
+        let cart = [];
+        let holdTimer = null;
+        let holdProgress = 0;
+        const HOLD_DURATION = 3000; // 3 seconds
+        const HOLD_INTERVAL = 30;   // Update every 30ms
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', () => {
+            renderProductGrid();
+            initParticleCanvas();
+            startFakeBuyerPopups();
+        });
+
+        // ================= FAKE TERMINAL LOGIC =================
+        function toggleTerminal() {
+            const modal = document.getElementById('terminal-modal');
+            const isHidden = modal.classList.contains('hidden');
+
+            if (isHidden) {
+                modal.classList.remove('hidden');
+                document.getElementById('terminal-input').focus();
+            } else {
+                modal.classList.add('hidden');
+            }
+        }
+
+        function printTerminalLine(text, colorClass = 'text-emerald-400') {
+            const output = document.getElementById('terminal-output');
+            const line = document.createElement('div');
+            line.className = colorClass;
+            line.innerHTML = text;
+            output.appendChild(line);
+            output.scrollTop = output.scrollHeight;
+        }
+
+        function handleTerminalSubmit(e) {
+            e.preventDefault();
+            const input = document.getElementById('terminal-input');
+            const cmd = input.value.trim();
+            input.value = '';
+
+            if (!cmd) return;
+
+            printTerminalLine(`root@nexus-shell:~# ${cmd}`, 'text-slate-300 font-bold');
+            playSound('terminal_beep');
+
+            const cleanCmd = cmd.toLowerCase().replace(/\s+/g, ' ');
+
+            if (cleanCmd === 'sudo apt install opsec' || cleanCmd === 'sudo apt-get install opsec' || cleanCmd === 'apt install opsec') {
+                runOpsecEasterEggSequence();
+            } else if (cleanCmd === 'help') {
+                printTerminalLine('AVAILABLE COMMANDS:');
+                printTerminalLine('  sudo apt install opsec  - Execute OPSEC hardening payload (Easter Egg)');
+                printTerminalLine('  ls                      - List system directory structure');
+                printTerminalLine('  cat README.txt          - Display hardware documentation');
+                printTerminalLine('  nexus --version         - Print firmware & kernel build version');
+                printTerminalLine('  matrix                  - Initiate digital matrix stream');
+                printTerminalLine('  clear                   - Flush terminal output display');
+            } else if (cleanCmd === 'clear') {
+                document.getElementById('terminal-output').innerHTML = '';
+            } else if (cleanCmd === 'ls') {
+                printTerminalLine('drwxr-xr-x 2 root root 4096 Oct 26 09:15 /dev/usb_nexus_nvme');
+                printTerminalLine('-rw-r--r-- 1 root root 1024 Oct 26 09:15 README.txt');
+                printTerminalLine('-rwxr-xr-x 1 root root 8192 Oct 26 09:15 thermal_guard.bin');
+            } else if (cleanCmd === 'cat readme.txt') {
+                printTerminalLine('[NEXUS STORAGE MANUAL v4.2]', 'text-cyan-400 font-bold');
+                printTerminalLine('NEXUS drives operate under USB 3.2 Gen 2x2 with sustained speeds up to 2000 MB/s.');
+                printTerminalLine('Thermal guard active. Encryption hardware ready.');
+            } else if (cleanCmd === 'nexus --version') {
+                printTerminalLine('NEXUS NVMe Controller Firmware v4.9.2-RELEASE (x86_64-quantum)', 'text-purple-400');
+            } else if (cleanCmd === 'matrix') {
+                for (let i = 0; i < 5; i++) {
+                    printTerminalLine(`01010100 01001000 01000101 00100000 01001110 01000101 01011000 01010101 01010011 ${Math.random().toString(36).substring(7)}`, 'text-emerald-500 text-[10px]');
+                }
+            } else {
+                printTerminalLine(`bash: command not found: ${cmd}. Type 'help' for valid commands.`, 'text-rose-400');
+            }
+        }
+
+        // OPSEC Easter Egg Installation Script Sequence
+        function runOpsecEasterEggSequence() {
+            const steps = [
+                { text: '[sudo] password for root: ************', delay: 200, color: 'text-yellow-400' },
+                { text: 'Reading package lists... Done', delay: 500, color: 'text-slate-400' },
+                { text: 'Building dependency tree... Done', delay: 800, color: 'text-slate-400' },
+                { text: 'The following NEW packages will be installed: opsec-payload-v99 nexus-stealth-shield', delay: 1100, color: 'text-cyan-400' },
+                { text: 'Get:1 https://repository.nexus-storage.net/debian opsec/main 4.09 [84.2 MB]', delay: 1500, color: 'text-slate-400' },
+                { text: '[OK] Downloading OPSEC payload binaries...', delay: 2000, color: 'text-emerald-400' },
+                { text: '[OK] Purging non-essential data telemetry...', delay: 2400, color: 'text-emerald-400' },
+                { text: '[OK] Applying 256-Bit Hardware AES Encrypted Keyrings...', delay: 2800, color: 'text-emerald-400' },
+                { text: '[OK] Overclocking USB Controller Memory Controllers...', delay: 3200, color: 'text-purple-400' },
+                { text: '---------------------------------------------------------', delay: 3500, color: 'text-slate-600' },
+                { text: '>>> OPSEC HARDENING COMPLETE! OVER 9000% DOPAMINE BOOST ACTIVATED! <<<', delay: 3900, color: 'text-pink-400 font-extrabold text-sm animate-pulse' },
+                { text: '[ACHIEVEMENT UNLOCKED]: OPSEC MASTER BADGE (+9999 REPUTATION)', delay: 4300, color: 'text-yellow-300 font-bold' }
+            ];
+
+            steps.forEach(step => {
+                setTimeout(() => {
+                    printTerminalLine(step.text, step.color);
+                    playSound('terminal_beep');
+
+                    if (step.text.includes('ACHIEVEMENT UNLOCKED')) {
+                        playSound('victory');
+                        triggerConfettiExplosion();
+                    }
+                }, step.delay);
+            });
+        }
+
+        // SVG Render for Futuristic USB Drives
+        function createUsbDriveSvg(colorGradient) {
+            return `
+                <svg class="w-36 h-36 mx-auto filter drop-shadow-[0_0_15px_rgba(0,243,255,0.4)] animate-float" viewBox="0 0 200 200" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                        <linearGradient id="usbGrad-${colorGradient}" x1="0%" y1="0%" x2="100%" y2="100%">
+                            <stop offset="0%" stop-color="#00f3ff" />
+                            <stop offset="50%" stop-color="#8a2be2" />
+                            <stop offset="100%" stop-color="#ff0055" />
+                        </linearGradient>
+                    </defs>
+                    <!-- Metal Connector -->
+                    <rect x="75" y="20" width="50" height="40" rx="4" fill="#94a3b8" stroke="#cbd5e1" stroke-width="2"/>
+                    <rect x="85" y="30" width="10" height="15" fill="#1e293b"/>
+                    <rect x="105" y="30" width="10" height="15" fill="#1e293b"/>
+                    
+                    <!-- USB Body -->
+                    <rect x="55" y="55" width="90" height="120" rx="16" fill="#0f172a" stroke="url(#usbGrad-${colorGradient})" stroke-width="4"/>
+                    
+                    <!-- Glowing Core Indicators -->
+                    <circle cx="100" cy="115" r="22" fill="none" stroke="url(#usbGrad-${colorGradient})" stroke-width="3" class="animate-pulse"/>
+                    <circle cx="100" cy="115" r="8" fill="#00f3ff" class="animate-ping"/>
+                    
+                    <!-- Details -->
+                    <line x1="70" y1="75" x2="130" y2="75" stroke="#334155" stroke-width="3" stroke-linecap="round"/>
+                    <line x1="70" y1="155" x2="130" y2="155" stroke="#334155" stroke-width="3" stroke-linecap="round"/>
+                    <path d="M 100 137 L 100 150" stroke="#00f3ff" stroke-width="2"/>
+                </svg>
+            `;
+        }
+
+        // Render Product Cards
+        function renderProductGrid() {
+            const gridHome = document.getElementById('product-grid');
+            const gridPage = document.getElementById('product-page-grid');
+
+            const html = PRODUCTS.map((p, idx) => `
+                <div class="bg-cyber-dark/80 rounded-3xl border ${p.glow}/40 p-6 flex flex-col justify-between hover:border-cyan-400 transition-all duration-300 transform hover:-translate-y-2 group shadow-xl relative overflow-hidden backdrop-blur-md">
+                    
+                    <!-- Badge -->
+                    <div class="absolute top-4 right-4 bg-cyber-black/80 border border-cyan-400/30 text-cyan-300 font-orbitron text-[10px] px-3 py-1 rounded-full font-bold uppercase tracking-widest">
+                        ${p.badge}
+                    </div>
+
+                    <!-- Visual USB Render -->
+                    <div class="py-6">
+                        ${createUsbDriveSvg(idx)}
+                    </div>
+
+                    <!-- Details -->
+                    <div class="space-y-3">
+                        <div class="text-xs text-slate-400 font-mono">INTERFACE: <span class="text-emerald-400 font-bold">${p.speed}</span></div>
+                        <h3 class="font-orbitron font-extrabold text-xl text-white group-hover:text-cyan-400 transition-colors">${p.name}</h3>
+                        <p class="text-slate-400 text-xs line-clamp-2 leading-relaxed">${p.desc}</p>
+                        
+                        <div class="pt-4 border-t border-slate-800/80 flex items-center justify-between">
+                            <div>
+                                <span class="text-[10px] text-slate-500 block font-mono">PRICE</span>
+                                <span class="font-orbitron text-2xl font-black text-transparent bg-clip-text bg-gradient-to-r ${p.color}">$${p.price}</span>
+                            </div>
+
+                            <button onclick="addToCart('${p.id}', event)" class="px-5 py-2.5 rounded-full btn-quantum text-cyber-black font-orbitron font-extrabold text-xs flex items-center space-x-1.5 shadow-lg">
+                                <i class="fa-solid fa-plus"></i>
+                                <span>ADD TO CART</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            if (gridHome) gridHome.innerHTML = html;
+            if (gridPage) gridPage.innerHTML = html;
+        }
+
+        // SPA Navigation Logic
+        function navigateTo(section) {
+            document.getElementById('sec-home').classList.add('hidden');
+            document.getElementById('sec-products').classList.add('hidden');
+            document.getElementById('sec-specs').classList.add('hidden');
+
+            document.getElementById(`sec-${section}`).classList.remove('hidden');
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        // Add item to cart with float indicator effect
+        function addToCart(productId, event) {
+            const product = PRODUCTS.find(p => p.id === productId);
+            const existing = cart.find(item => item.id === productId);
+
+            if (existing) {
+                existing.qty += 1;
+            } else {
+                cart.push({ ...product, qty: 1 });
+            }
+
+            playSound('add');
+            triggerPlusOneAnimation(event);
+            updateCartUI();
+        }
+
+        // Floating +1 Dopamine animation
+        function triggerPlusOneAnimation(e) {
+            const el = document.createElement('div');
+            el.className = 'float-plus-one';
+            el.innerText = '+1 ADDED';
+            
+            const x = e ? e.clientX : window.innerWidth / 2;
+            const y = e ? e.clientY : window.innerHeight / 2;
+
+            el.style.left = `${x - 40}px`;
+            el.style.top = `${y - 20}px`;
+
+            document.body.appendChild(el);
+
+            setTimeout(() => {
+                el.remove();
+            }, 1200);
+        }
+
+        // Update Cart Drawer UI
+        function updateCartUI() {
+            const badge = document.getElementById('cart-badge');
+            const totalItems = cart.reduce((acc, item) => acc + item.qty, 0);
+            badge.innerText = totalItems;
+
+            const container = document.getElementById('cart-items-container');
+            const subtotalEl = document.getElementById('cart-subtotal');
+
+            if (cart.length === 0) {
+                container.innerHTML = `
+                    <div class="text-center py-12 text-slate-500 font-orbitron text-sm">
+                        <i class="fa-solid fa-box-open text-3xl mb-3 block text-slate-600"></i>
+                        YOUR CART IS EMPTY
+                    </div>
+                `;
+                subtotalEl.innerText = '$0.00';
+                document.getElementById('btn-proceed-checkout').disabled = true;
+                return;
+            }
+
+            document.getElementById('btn-proceed-checkout').disabled = false;
+
+            let total = 0;
+            container.innerHTML = cart.map(item => {
+                const itemTotal = item.price * item.qty;
+                total += itemTotal;
+                return `
+                    <div class="bg-cyber-black/80 border border-slate-800 p-4 rounded-2xl flex items-center justify-between">
+                        <div>
+                            <div class="font-orbitron font-bold text-sm text-white">${item.name}</div>
+                            <div class="text-xs text-cyan-400 font-mono">$${item.price} x ${item.qty}</div>
+                        </div>
+                        <div class="flex items-center space-x-3">
+                            <div class="font-orbitron font-bold text-pink-400 text-sm">$${itemTotal.toFixed(2)}</div>
+                            <button onclick="removeFromCart('${item.id}')" class="text-slate-500 hover:text-rose-500 text-xs">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+
+            subtotalEl.innerText = `$${total.toFixed(2)}`;
+            document.getElementById('checkout-total-price').innerText = `$${total.toFixed(2)}`;
+        }
+
+        function removeFromCart(id) {
+            cart = cart.filter(item => item.id !== id);
+            updateCartUI();
+        }
+
+        function toggleCart() {
+            const drawer = document.getElementById('cart-drawer');
+            const panel = document.getElementById('cart-panel');
+            
+            if (drawer.classList.contains('pointer-events-none')) {
+                drawer.classList.remove('pointer-events-none', 'opacity-0');
+                drawer.classList.add('opacity-100');
+                panel.classList.remove('translate-x-full');
+            } else {
+                drawer.classList.add('opacity-0', 'pointer-events-none');
+                panel.classList.add('translate-x-full');
+            }
+        }
+
+        // Open Checkout Modal
+        function openCheckoutModal() {
+            toggleCart();
+            document.getElementById('checkout-modal').classList.remove('hidden');
+            setupHoldToBuyButton();
+        }
+
+        function closeCheckoutModal() {
+            document.getElementById('checkout-modal').classList.add('hidden');
+            resetHoldButton();
+        }
+
+        // ================= HOLD TO BUY BUTTON LOGIC =================
+        function setupHoldToBuyButton() {
+            const btn = document.getElementById('hold-buy-btn');
+            
+            btn.addEventListener('mousedown', startHold);
+            btn.addEventListener('touchstart', startHold);
+
+            window.addEventListener('mouseup', stopHold);
+            window.addEventListener('touchend', stopHold);
+        }
+
+        function startHold(e) {
+            if (e) e.preventDefault();
+            holdProgress = 0;
+            const box = document.getElementById('checkout-box');
+            box.classList.add('rumble-active');
+
+            holdTimer = setInterval(() => {
+                holdProgress += HOLD_INTERVAL;
+                const percent = Math.min((holdProgress / HOLD_DURATION) * 100, 100);
+                
+                document.getElementById('hold-progress-bar').style.width = `${percent}%`;
+                document.getElementById('hold-btn-text').innerText = `PROCESSING AUTHORIZATION (${Math.floor(percent)}%)`;
+
+                playSound('hold');
+
+                if (holdProgress >= HOLD_DURATION) {
+                    completeHoldPurchase();
+                }
+            }, HOLD_INTERVAL);
+        }
+
+        function stopHold() {
+            if (holdTimer) {
+                clearInterval(holdTimer);
+                holdTimer = null;
+            }
+            document.getElementById('checkout-box').classList.remove('rumble-active');
+            if (holdProgress < HOLD_DURATION) {
+                resetHoldButton();
+            }
+        }
+
+        function resetHoldButton() {
+            holdProgress = 0;
+            document.getElementById('hold-progress-bar').style.width = '0%';
+            document.getElementById('hold-btn-text').innerHTML = `
+                <i class="fa-solid fa-fingerprint text-xl"></i>
+                <span>HOLD TO CONFIRM PURCHASE</span>
+            `;
+        }
+
+        function completeHoldPurchase() {
+            stopHold();
+            closeCheckoutModal();
+
+            // Play Victory Audio & Confetti Explosions
+            playSound('victory');
+            triggerConfettiExplosion();
+
+            // Show Success Victory Modal
+            document.getElementById('success-modal').classList.remove('hidden');
+        }
+
+        function triggerConfettiExplosion() {
+            if (typeof confetti === 'function') {
+                confetti({
+                    particleCount: 120,
+                    spread: 80,
+                    origin: { y: 0.6 }
+                });
+            }
+        }
+
+        // Redirect back to store home and reset cart after successful purchase modal completion
+        function finishCheckoutAndRedirect() {
+            // Close success modal
+            document.getElementById('success-modal').classList.add('hidden');
+
+            // Reset cart & state
+            cart = [];
+            updateCartUI();
+
+            // Navigate back to home
+            navigateTo('home');
+        }
+
+        // Live Fake Buyer Popups (Hyper-Active Mode: 2.5s - 4.5s)
+        function startFakeBuyerPopups() {
+            const names = [
+                'Marcus from Austin, TX', 
+                'Kaito from Tokyo, JP', 
+                'Elena from Berlin, DE', 
+                'Sarah from London, UK', 
+                'David from Sydney, AU',
+                'Alex from Toronto, CA',
+                'Viktor from Zurich, CH',
+                'Chloe from Paris, FR'
+            ];
+            
+            const actions = [
+                'purchased NEXUS Ultima 4TB (USB 3.2 Gen 2x2)!', 
+                'ordered NEXUS Extreme 2TB (Creator Edition)!', 
+                'bought NEXUS Pro 1TB High-Speed Flash Drive!', 
+                'acquired NEXUS Pro 256GB USB Node!'
+            ];
+
+            function triggerPopup() {
+                const popup = document.getElementById('live-buyer-popup');
+                const randomName = names[Math.floor(Math.random() * names.length)];
+                const randomAction = actions[Math.floor(Math.random() * actions.length)];
+
+                document.getElementById('buyer-name').innerText = randomName;
+                document.getElementById('buyer-action').innerText = randomAction;
+
+                popup.classList.remove('translate-y-32', 'opacity-0');
+
+                // Fade out faster to support quick updates
+                setTimeout(() => {
+                    popup.classList.add('translate-y-32', 'opacity-0');
+                }, 2200);
+
+                // Schedule next notification between 2.5s to 4.5s
+                const nextDelay = Math.floor(Math.random() * 2000) + 2500;
+                setTimeout(triggerPopup, nextDelay);
+            }
+
+            // Start initial timer loop
+            setTimeout(triggerPopup, 2000);
+        }
+
+        function showQuickDemoToast() {
+            playSound('add');
+            triggerPlusOneAnimation();
+        }
+
+        // Background Particle Effect (HTML5 Canvas)
+        function initParticleCanvas() {
+            const canvas = document.getElementById('particleCanvas');
+            const ctx = canvas.getContext('2d');
+
+            let width = canvas.width = window.innerWidth;
+            let height = canvas.height = window.innerHeight;
+
+            window.addEventListener('resize', () => {
+                width = canvas.width = window.innerWidth;
+                height = canvas.height = window.innerHeight;
+            });
+
+            const particles = Array.from({ length: 45 }, () => ({
+                x: Math.random() * width,
+                y: Math.random() * height,
+                radius: Math.random() * 2 + 0.5,
+                color: Math.random() > 0.5 ? '#00f3ff' : '#ff0055',
+                vx: (Math.random() - 0.5) * 0.4,
+                vy: (Math.random() - 0.5) * 0.4
+            }));
+
+            function animateParticles() {
+                ctx.clearRect(0, 0, width, height);
+
+                particles.forEach(p => {
+                    p.x += p.vx;
+                    p.y += p.vy;
+
+                    if (p.x < 0) p.x = width;
+                    if (p.x > width) p.x = 0;
+                    if (p.y < 0) p.y = height;
+                    if (p.y > height) p.y = 0;
+
+                    ctx.beginPath();
+                    ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2);
+                    ctx.fillStyle = p.color;
+                    ctx.shadowBlur = 10;
+                    ctx.shadowColor = p.color;
+                    ctx.fill();
+                });
+
+                requestAnimationFrame(animateParticles);
+            }
+
+            animateParticles();
+        }
+    </script>
+</body>
+</html>
